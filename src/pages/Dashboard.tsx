@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { getProjects } from "@/services/projects";
 import { getMyTasks } from "@/services/tasks";
 import { getTodayAttendance } from "@/services/attendance";
-import { FolderKanban, ListChecks, Clock, ArrowRight } from "lucide-react";
+import { FolderKanban, ListChecks, Clock, ArrowRight, Sparkles, Activity } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
@@ -21,47 +21,57 @@ const Dashboard = () => {
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Welcome back{isAdmin ? " · Administrator" : ""}
+        <div className="inline-flex items-center gap-2 text-xs text-primary/80 bg-primary/10 border border-primary/20 rounded-full px-3 py-1 mb-3">
+          <Sparkles className="h-3 w-3" />
+          {isAdmin ? "Administrator workspace" : "Welcome back"}
+        </div>
+        <h1 className="text-4xl font-bold text-gradient">Dashboard</h1>
+        <p className="text-sm text-muted-foreground mt-2">
+          Here's what's happening across your projects today.
         </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Projects" value={projectsQ.data?.length ?? 0} icon={FolderKanban} />
-        <StatCard label="My tasks" value={myTasksQ.data?.length ?? 0} icon={ListChecks} />
-        <StatCard label="In progress" value={inProgressCount} icon={ListChecks} accent="warning" />
+        <StatCard label="Projects" value={projectsQ.data?.length ?? 0} icon={FolderKanban} accent="primary" />
+        <StatCard label="My tasks" value={myTasksQ.data?.length ?? 0} icon={ListChecks} accent="secondary" />
+        <StatCard label="In progress" value={inProgressCount} icon={Activity} accent="warning" />
         <StatCard
-          label="Today's attendance"
+          label="Today"
           value={todayAttQ.data?.status ?? "—"}
           icon={Clock}
           textValue
+          accent="success"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <section className="card-elevated p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold">Recent tasks</h2>
+        <section className="card-glass p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-semibold text-lg">Recent tasks</h2>
             <span className="text-xs text-muted-foreground">
-              {todoCount} todo · {inProgressCount} in progress · {doneCount} done
+              {todoCount} todo · {inProgressCount} active · {doneCount} done
             </span>
           </div>
           {myTasksQ.isLoading ? (
             <p className="text-sm text-muted-foreground">Loading…</p>
           ) : (myTasksQ.data ?? []).length === 0 ? (
-            <p className="text-sm text-muted-foreground">No tasks assigned.</p>
+            <div className="text-center py-10">
+              <ListChecks className="h-10 w-10 mx-auto text-muted-foreground/50 mb-2" />
+              <p className="text-sm text-muted-foreground">No tasks assigned.</p>
+            </div>
           ) : (
-            <ul className="divide-y divide-border">
+            <ul className="space-y-1">
               {(myTasksQ.data ?? []).slice(0, 6).map((t) => (
                 <li key={t.id}>
                   <Link
                     to={`/tasks/${t.id}`}
-                    className="flex items-center justify-between py-3 hover:opacity-80"
+                    className="flex items-center justify-between p-3 -mx-2 rounded-lg hover:bg-muted/40 transition-colors group"
                   >
                     <div className="min-w-0">
-                      <div className="text-sm font-medium truncate">{t.title}</div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                        {t.title}
+                      </div>
+                      <div className="text-xs text-muted-foreground mt-0.5">
                         {t.priority} priority{t.due_date ? ` · due ${t.due_date}` : ""}
                       </div>
                     </div>
@@ -73,26 +83,39 @@ const Dashboard = () => {
           )}
         </section>
 
-        <section className="card-elevated p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold">Projects</h2>
-            <Link to="/projects" className="text-sm text-primary inline-flex items-center gap-1">
+        <section className="card-glass p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-semibold text-lg">Projects</h2>
+            <Link to="/projects" className="text-sm text-primary inline-flex items-center gap-1 hover:gap-2 transition-all">
               View all <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
           {projectsQ.isLoading ? (
             <p className="text-sm text-muted-foreground">Loading…</p>
           ) : (projectsQ.data ?? []).length === 0 ? (
-            <p className="text-sm text-muted-foreground">No projects yet.</p>
+            <div className="text-center py-10">
+              <FolderKanban className="h-10 w-10 mx-auto text-muted-foreground/50 mb-2" />
+              <p className="text-sm text-muted-foreground">No projects yet.</p>
+            </div>
           ) : (
-            <ul className="divide-y divide-border">
+            <ul className="space-y-1">
               {(projectsQ.data ?? []).slice(0, 6).map((p) => (
                 <li key={p.id}>
-                  <Link to={`/projects/${p.id}`} className="block py-3 hover:opacity-80">
-                    <div className="text-sm font-medium">{p.name}</div>
-                    {p.description && (
-                      <div className="text-xs text-muted-foreground truncate">{p.description}</div>
-                    )}
+                  <Link
+                    to={`/projects/${p.id}`}
+                    className="flex items-start gap-3 p-3 -mx-2 rounded-lg hover:bg-muted/40 transition-colors group"
+                  >
+                    <div className="h-9 w-9 rounded-lg bg-gradient-primary opacity-80 group-hover:opacity-100 group-hover:glow-primary transition-all flex items-center justify-center shrink-0">
+                      <FolderKanban className="h-4 w-4 text-primary-foreground" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                        {p.name}
+                      </div>
+                      {p.description && (
+                        <div className="text-xs text-muted-foreground truncate mt-0.5">{p.description}</div>
+                      )}
+                    </div>
                   </Link>
                 </li>
               ))}
@@ -104,26 +127,31 @@ const Dashboard = () => {
   );
 };
 
+const ACCENTS: Record<string, string> = {
+  primary: "from-primary/20 to-primary/5 text-primary",
+  secondary: "from-secondary/20 to-secondary/5 text-secondary",
+  warning: "from-warning/20 to-warning/5 text-warning",
+  success: "from-success/20 to-success/5 text-success",
+};
+
 function StatCard({
-  label,
-  value,
-  icon: Icon,
-  accent,
-  textValue,
+  label, value, icon: Icon, textValue, accent = "primary",
 }: {
   label: string;
   value: number | string;
   icon: any;
-  accent?: "warning" | "success";
   textValue?: boolean;
+  accent?: keyof typeof ACCENTS | string;
 }) {
   return (
-    <div className="stat-card">
-      <div className="flex items-center justify-between">
-        <span className="text-xs text-muted-foreground uppercase tracking-wider">{label}</span>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+    <div className="stat-card group">
+      <div className="flex items-center justify-between relative z-10">
+        <span className="text-xs text-muted-foreground uppercase tracking-wider font-medium">{label}</span>
+        <div className={`h-8 w-8 rounded-lg bg-gradient-to-br ${ACCENTS[accent] ?? ACCENTS.primary} flex items-center justify-center`}>
+          <Icon className="h-4 w-4" />
+        </div>
       </div>
-      <div className={`text-2xl font-semibold ${textValue ? "capitalize" : ""}`}>{value}</div>
+      <div className={`text-3xl font-bold relative z-10 ${textValue ? "capitalize" : ""}`}>{value}</div>
     </div>
   );
 }

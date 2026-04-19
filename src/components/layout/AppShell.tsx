@@ -8,7 +8,7 @@ import {
   Users,
   CalendarCheck,
   LogOut,
-  Briefcase,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -36,10 +36,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex w-full bg-background">
       <aside className="hidden md:flex w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
         <div className="h-16 flex items-center gap-2 px-6 border-b border-sidebar-border">
-          <div className="h-8 w-8 rounded-md bg-sidebar-primary flex items-center justify-center">
-            <Briefcase className="h-4 w-4 text-sidebar-primary-foreground" />
+          <div className="h-9 w-9 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
+            <Sparkles className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="font-semibold text-sidebar-primary-foreground">Agency PM</span>
+          <span className="font-bold text-base text-gradient">Agency PM</span>
         </div>
         <nav className="flex-1 p-3 space-y-1">
           {navItems.map((item) => (
@@ -47,7 +47,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           ))}
           {isAdmin && (
             <>
-              <div className="pt-4 pb-1 px-3 text-xs uppercase tracking-wider text-sidebar-foreground/50">
+              <div className="pt-5 pb-2 px-3 text-[10px] uppercase tracking-widest text-sidebar-foreground/40 font-semibold">
                 Admin
               </div>
               {adminItems.map((item) => (
@@ -57,9 +57,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
         </nav>
         <div className="p-3 border-t border-sidebar-border">
-          <div className="px-3 py-2 mb-2">
-            <div className="text-sm text-sidebar-primary-foreground truncate">{user?.email}</div>
-            <div className="text-xs text-sidebar-foreground/60">{isAdmin ? "Administrator" : "Member"}</div>
+          <div className="px-3 py-2.5 mb-2 rounded-lg bg-sidebar-accent/40">
+            <div className="text-sm text-sidebar-primary-foreground truncate font-medium">{user?.email}</div>
+            <div className="text-xs text-sidebar-foreground/60 mt-0.5">
+              {isAdmin ? "✦ Administrator" : "Member"}
+            </div>
           </div>
           <Button
             variant="ghost"
@@ -72,8 +74,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="md:hidden h-14 flex items-center justify-between px-4 border-b border-border bg-card">
-          <span className="font-semibold">Agency PM</span>
+        <header className="md:hidden h-14 flex items-center justify-between px-4 border-b border-border bg-card/70 backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <div className="h-7 w-7 rounded-md bg-gradient-primary flex items-center justify-center">
+              <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
+            </div>
+            <span className="font-bold text-gradient">Agency PM</span>
+          </div>
           <Button variant="ghost" size="sm" onClick={handleSignOut}>
             <LogOut className="h-4 w-4" />
           </Button>
@@ -91,15 +98,20 @@ function NavItem({ to, label, icon: Icon }: { to: string; label: string; icon: a
       end
       className={({ isActive }) =>
         cn(
-          "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+          "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all relative group",
           isActive
-            ? "bg-sidebar-accent text-sidebar-accent-foreground"
+            ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-glow"
             : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
         )
       }
     >
-      <Icon className="h-4 w-4" />
-      {label}
+      {({ isActive }) => (
+        <>
+          {isActive && <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 bg-gradient-primary rounded-r-full" />}
+          <Icon className="h-4 w-4" />
+          <span className="font-medium">{label}</span>
+        </>
+      )}
     </NavLink>
   );
 }
