@@ -102,21 +102,26 @@ export async function getMyAttendanceHistory() {
 export async function getAllAttendance(filters?: { date?: string; userId?: string }) {
   let q = supabase
     .from("attendance")
-    .select("*, profiles:profiles!attendance_user_id_fkey(name, email)")
+    .select("*")
     .order("date", { ascending: false })
     .limit(500);
   if (filters?.date) q = q.eq("date", filters.date);
   if (filters?.userId) q = q.eq("user_id", filters.userId);
   const { data, error } = await q;
-  if (error) {
-    let q2 = supabase.from("attendance").select("*").order("date", { ascending: false }).limit(500);
-    if (filters?.date) q2 = q2.eq("date", filters.date);
-    if (filters?.userId) q2 = q2.eq("user_id", filters.userId);
-    const f = await q2;
-    if (f.error) throw f.error;
-    return f.data.map((r) => ({ ...r, profiles: null }));
+  if (error) throw error;
+
+  const userIds = Array.from(new Set((data ?? []).map((r) => r.user_id)));
+  let profiles: Record<string, { name: string; email: string }> = {};
+  if (userIds.length > 0) {
+    const { data: profs } = await supabase
+      .from("profiles")
+      .select("id, name, email")
+      .in("id", userIds);
+    profiles = Object.fromEntries(
+      (profs ?? []).map((p) => [p.id, { name: p.name, email: p.email }]),
+    );
   }
-  return data;
+  return (data ?? []).map((r) => ({ ...r, profiles: profiles[r.user_id] ?? null }));
 }
 
 // Determine if check-in/out is allowed right now based on settings (UTC server clock approximated by client clock).
