@@ -1,7 +1,7 @@
 project_id = "noezumhbbvicpivicflm"
 
 [functions.admin-create-user]
-verify_jwt = true
+verify_jwt = false
 
 [functions.admin-update-user]
-verify_jwt = true
+verify_jwt = false

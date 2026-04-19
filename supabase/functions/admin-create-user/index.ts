@@ -29,15 +29,15 @@ Deno.serve(async (req) => {
     const ANON = Deno.env.get("SUPABASE_ANON_KEY")!;
     const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    // Verify caller
+    // Verify caller via JWT claims (signing-keys compatible)
     const userClient = createClient(SUPABASE_URL, ANON, {
       global: { headers: { Authorization: authHeader } },
     });
     const token = authHeader.replace("Bearer ", "");
-    const { data: claims, error: claimsErr } = await userClient.auth.getUser(
-      token,
-    );
-    if (claimsErr || !claims?.user?.id) {
+    const { data: claimsRes, error: claimsErr } = await userClient.auth
+      .getClaims(token);
+    const callerId = claimsRes?.claims?.sub;
+    if (claimsErr || !callerId) {
       return json({ error: "Unauthorized" }, 401);
     }
 
@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
     // Check caller is admin
     const { data: isAdmin, error: roleErr } = await adminClient.rpc(
       "has_role",
-      { _user_id: claims.user.id, _role: "admin" },
+      { _user_id: callerId, _role: "admin" },
     );
     if (roleErr || !isAdmin) {
       return json({ error: "Forbidden: admin only" }, 403);
