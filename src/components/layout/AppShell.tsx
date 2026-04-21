@@ -25,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const navItems = [
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { to: "/projects", label: "Projects", icon: FolderKanban },
-    { to: "/attendance", label: "Attendance", icon: Clock },
+    ...(isAdmin ? [] : [{ to: "/attendance", label: "Attendance", icon: Clock }]),
   ];
   const adminItems = [
     { to: "/admin/users", label: "Users", icon: Users },

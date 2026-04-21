@@ -5,8 +5,10 @@ import {
   getMyAttendanceHistory, getTodayAttendance, withinWindow,
 } from "@/services/attendance";
 import { Button } from "@/components/ui/button";
-import { Clock, LogIn, LogOut, AlertCircle } from "lucide-react";
+import { Clock, LogIn, LogOut, AlertCircle, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const StatusPill = ({ status }: { status: string | null | undefined }) => {
   const map: Record<string, string> = {
@@ -25,6 +27,7 @@ const StatusPill = ({ status }: { status: string | null | undefined }) => {
 const Attendance = () => {
   const qc = useQueryClient();
   const [now, setNow] = useState(new Date());
+  const { isAdmin } = useAuth();
 
   // Refresh every second so the live clock + button state stay accurate.
   useEffect(() => {
@@ -33,8 +36,8 @@ const Attendance = () => {
   }, []);
 
   const settingsQ = useQuery({ queryKey: ["att-settings"], queryFn: getAttendanceSettings });
-  const todayQ = useQuery({ queryKey: ["today-attendance"], queryFn: getTodayAttendance });
-  const histQ = useQuery({ queryKey: ["att-history"], queryFn: getMyAttendanceHistory });
+  const todayQ = useQuery({ queryKey: ["today-attendance"], queryFn: getTodayAttendance, enabled: !isAdmin });
+  const histQ = useQuery({ queryKey: ["att-history"], queryFn: getMyAttendanceHistory, enabled: !isAdmin });
 
   const checkInMut = useMutation({
     mutationFn: checkIn,
@@ -83,6 +86,32 @@ const Attendance = () => {
     if (!inWindowCheckOut) return `Outside check-out window (${s.check_out_start.slice(0,5)}–${s.check_out_end.slice(0,5)} ${tz})`;
     return null;
   })();
+
+  if (isAdmin) {
+    return (
+      <div className="p-6 md:p-8 max-w-3xl mx-auto animate-fade-in">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gradient">Attendance</h1>
+          <p className="text-sm text-muted-foreground mt-2">Admin view</p>
+        </div>
+        <div className="card-glass p-8 text-center">
+          <div className="mx-auto h-12 w-12 rounded-full bg-primary/15 flex items-center justify-center mb-4">
+            <ShieldCheck className="h-6 w-6 text-primary" />
+          </div>
+          <h2 className="font-semibold text-lg mb-2">Admins don't check in</h2>
+          <p className="text-sm text-muted-foreground mb-5 max-w-md mx-auto">
+            Attendance check-in and check-out are for team members only. As an admin, you can review
+            everyone's attendance and manage the allowed time windows.
+          </p>
+          <div className="flex gap-2 justify-center">
+            <Button asChild className="btn-gradient">
+              <Link to="/admin/attendance">View all attendance</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 md:p-8 max-w-5xl mx-auto animate-fade-in">

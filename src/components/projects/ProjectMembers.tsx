@@ -101,7 +101,7 @@ export function ProjectMembers({ projectId, isAdmin }: { projectId: string; isAd
                 <div className="text-sm font-medium truncate">
                   {m.profile?.name || m.profile?.email || m.user_id}
                 </div>
-                {m.profile?.email && (
+                {isAdmin && m.profile?.email && (
                   <div className="text-xs text-muted-foreground truncate">{m.profile.email}</div>
                 )}
               </div>
