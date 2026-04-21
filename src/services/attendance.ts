@@ -126,16 +126,37 @@ export async function getAllAttendance(filters?: { date?: string; userId?: strin
 
 // Determine if check-in/out is allowed right now based on settings (UTC server clock approximated by client clock).
 export function withinWindow(now: Date, start: string, end: string, tz: string): boolean {
-  // Compute the local time-of-day in the configured tz
-  const fmt = new Intl.DateTimeFormat("en-GB", {
-    timeZone: tz,
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-  const parts = fmt.formatToParts(now);
-  const hh = parts.find((p) => p.type === "hour")?.value ?? "00";
-  const mm = parts.find((p) => p.type === "minute")?.value ?? "00";
-  const cur = `${hh}:${mm}`;
+  const cur = currentTimeInTz(now, tz);
   return cur >= start.slice(0, 5) && cur <= end.slice(0, 5);
+}
+
+// HH:MM string in the configured timezone (24h)
+export function currentTimeInTz(now: Date, tz: string): string {
+  try {
+    const fmt = new Intl.DateTimeFormat("en-GB", {
+      timeZone: tz,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    const parts = fmt.formatToParts(now);
+    let hh = parts.find((p) => p.type === "hour")?.value ?? "00";
+    const mm = parts.find((p) => p.type === "minute")?.value ?? "00";
+    if (hh === "24") hh = "00"; // safari edge case
+    return `${hh}:${mm}`;
+  } catch {
+    // Fallback to local time if timezone is invalid
+    const hh = String(now.getHours()).padStart(2, "0");
+    const mm = String(now.getMinutes()).padStart(2, "0");
+    return `${hh}:${mm}`;
+  }
+}
+
+// Returns the user's browser timezone (e.g., "Asia/Kolkata")
+export function getBrowserTimezone(): string {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  } catch {
+    return "UTC";
+  }
 }
