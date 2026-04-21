@@ -3,12 +3,36 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import {
   getAllAttendance, getAttendanceSettings, updateAttendanceSettings,
+  getBrowserTimezone,
 } from "@/services/attendance";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Settings } from "lucide-react";
+import { Settings, Globe } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import { useMemo } from "react";
+
+// Build a sorted list of IANA timezones from the runtime when available,
+// with a curated fallback list for older browsers.
+function getAllTimezones(): string[] {
+  try {
+    // @ts-ignore - supportedValuesOf is widely supported in modern browsers
+    const tz = Intl.supportedValuesOf?.("timeZone") as string[] | undefined;
+    if (tz && tz.length > 0) return tz;
+  } catch {}
+  return [
+    "UTC",
+    "Africa/Cairo","Africa/Johannesburg","Africa/Lagos","Africa/Nairobi",
+    "America/Anchorage","America/Argentina/Buenos_Aires","America/Bogota","America/Chicago","America/Denver","America/Halifax","America/Lima","America/Los_Angeles","America/Mexico_City","America/New_York","America/Phoenix","America/Sao_Paulo","America/Toronto","America/Vancouver",
+    "Asia/Bangkok","Asia/Dhaka","Asia/Dubai","Asia/Hong_Kong","Asia/Jakarta","Asia/Jerusalem","Asia/Kolkata","Asia/Kuala_Lumpur","Asia/Manila","Asia/Riyadh","Asia/Seoul","Asia/Shanghai","Asia/Singapore","Asia/Taipei","Asia/Tehran","Asia/Tokyo",
+    "Australia/Adelaide","Australia/Brisbane","Australia/Melbourne","Australia/Perth","Australia/Sydney",
+    "Europe/Amsterdam","Europe/Athens","Europe/Berlin","Europe/Brussels","Europe/Bucharest","Europe/Dublin","Europe/Helsinki","Europe/Istanbul","Europe/Lisbon","Europe/London","Europe/Madrid","Europe/Moscow","Europe/Oslo","Europe/Paris","Europe/Prague","Europe/Rome","Europe/Stockholm","Europe/Vienna","Europe/Warsaw","Europe/Zurich",
+    "Pacific/Auckland","Pacific/Fiji","Pacific/Honolulu",
+  ];
+}
 
 interface SettingsValues {
   check_in_start: string;
@@ -35,6 +59,8 @@ const StatusPill = ({ status }: { status: string }) => {
 const AdminAttendance = () => {
   const qc = useQueryClient();
   const [date, setDate] = useState<string>("");
+  const [tzFilter, setTzFilter] = useState("");
+  const allTimezones = useMemo(() => getAllTimezones(), []);
 
   const settingsQ = useQuery({ queryKey: ["att-settings"], queryFn: getAttendanceSettings });
   const recordsQ = useQuery({
@@ -42,12 +68,8 @@ const AdminAttendance = () => {
     queryFn: () => getAllAttendance({ date: date || undefined }),
   });
 
-  const { register, handleSubmit, reset } = useForm<SettingsValues>();
-
-  // Sync defaults once loaded
-  if (settingsQ.data && !register("timezone").name) {
-    // noop — RHF defaults handled below via reset on successful query
-  }
+  const { register, handleSubmit, setValue, watch } = useForm<SettingsValues>();
+  const tzValue = watch("timezone") || settingsQ.data?.timezone || "UTC";
 
   const settingsMut = useMutation({
     mutationFn: updateAttendanceSettings,
