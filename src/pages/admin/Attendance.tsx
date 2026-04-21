@@ -3,12 +3,36 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import {
   getAllAttendance, getAttendanceSettings, updateAttendanceSettings,
+  getBrowserTimezone,
 } from "@/services/attendance";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Settings } from "lucide-react";
+import { Settings, Globe } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import { useMemo } from "react";
+
+// Build a sorted list of IANA timezones from the runtime when available,
+// with a curated fallback list for older browsers.
+function getAllTimezones(): string[] {
+  try {
+    // @ts-ignore - supportedValuesOf is widely supported in modern browsers
+    const tz = Intl.supportedValuesOf?.("timeZone") as string[] | undefined;
+    if (tz && tz.length > 0) return tz;
+  } catch {}
+  return [
+    "UTC",
+    "Africa/Cairo","Africa/Johannesburg","Africa/Lagos","Africa/Nairobi",
+    "America/Anchorage","America/Argentina/Buenos_Aires","America/Bogota","America/Chicago","America/Denver","America/Halifax","America/Lima","America/Los_Angeles","America/Mexico_City","America/New_York","America/Phoenix","America/Sao_Paulo","America/Toronto","America/Vancouver",
+    "Asia/Bangkok","Asia/Dhaka","Asia/Dubai","Asia/Hong_Kong","Asia/Jakarta","Asia/Jerusalem","Asia/Kolkata","Asia/Kuala_Lumpur","Asia/Manila","Asia/Riyadh","Asia/Seoul","Asia/Shanghai","Asia/Singapore","Asia/Taipei","Asia/Tehran","Asia/Tokyo",
+    "Australia/Adelaide","Australia/Brisbane","Australia/Melbourne","Australia/Perth","Australia/Sydney",
+    "Europe/Amsterdam","Europe/Athens","Europe/Berlin","Europe/Brussels","Europe/Bucharest","Europe/Dublin","Europe/Helsinki","Europe/Istanbul","Europe/Lisbon","Europe/London","Europe/Madrid","Europe/Moscow","Europe/Oslo","Europe/Paris","Europe/Prague","Europe/Rome","Europe/Stockholm","Europe/Vienna","Europe/Warsaw","Europe/Zurich",
+    "Pacific/Auckland","Pacific/Fiji","Pacific/Honolulu",
+  ];
+}
 
 interface SettingsValues {
   check_in_start: string;
@@ -35,6 +59,8 @@ const StatusPill = ({ status }: { status: string }) => {
 const AdminAttendance = () => {
   const qc = useQueryClient();
   const [date, setDate] = useState<string>("");
+  const [tzFilter, setTzFilter] = useState("");
+  const allTimezones = useMemo(() => getAllTimezones(), []);
 
   const settingsQ = useQuery({ queryKey: ["att-settings"], queryFn: getAttendanceSettings });
   const recordsQ = useQuery({
@@ -42,12 +68,8 @@ const AdminAttendance = () => {
     queryFn: () => getAllAttendance({ date: date || undefined }),
   });
 
-  const { register, handleSubmit, reset } = useForm<SettingsValues>();
-
-  // Sync defaults once loaded
-  if (settingsQ.data && !register("timezone").name) {
-    // noop — RHF defaults handled below via reset on successful query
-  }
+  const { register, handleSubmit, setValue, watch } = useForm<SettingsValues>();
+  const tzValue = watch("timezone") || settingsQ.data?.timezone || "UTC";
 
   const settingsMut = useMutation({
     mutationFn: updateAttendanceSettings,
@@ -93,7 +115,64 @@ const AdminAttendance = () => {
               className="space-y-2 text-xs"
             >
               <Field label="Timezone">
-                <Input defaultValue={settingsQ.data.timezone} {...register("timezone", { required: true })} />
+                {/* Hidden RHF-registered input — value driven by the Select below */}
+                <input
+                  type="hidden"
+                  defaultValue={settingsQ.data.timezone}
+                  {...register("timezone", { required: true })}
+                />
+                <div className="flex gap-2">
+                  <Select
+                    value={tzValue}
+                    onValueChange={(v) =>
+                      setValue("timezone", v, { shouldDirty: true, shouldValidate: true })
+                    }
+                  >
+                    <SelectTrigger className="h-9 flex-1">
+                      <SelectValue placeholder="Select timezone" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-72">
+                      <div className="px-2 pt-2 pb-1 sticky top-0 bg-popover z-10">
+                        <Input
+                          autoFocus
+                          placeholder="Search timezone…"
+                          value={tzFilter}
+                          onChange={(e) => setTzFilter(e.target.value)}
+                          onKeyDown={(e) => e.stopPropagation()}
+                          className="h-8 text-xs"
+                        />
+                      </div>
+                      {allTimezones
+                        .filter((tz) =>
+                          tz.toLowerCase().includes(tzFilter.toLowerCase()),
+                        )
+                        .slice(0, 200)
+                        .map((tz) => (
+                          <SelectItem key={tz} value={tz} className="text-xs">
+                            {tz}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="h-9 shrink-0"
+                    onClick={() =>
+                      setValue("timezone", getBrowserTimezone(), {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      })
+                    }
+                    title="Use browser timezone"
+                  >
+                    <Globe className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  Current: <span className="font-medium">{tzValue}</span>
+                </p>
               </Field>
               <div className="grid grid-cols-2 gap-2">
                 <Field label="Check-in start">
