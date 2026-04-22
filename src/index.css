@@ -2,106 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CorePro Techno LLP — Editorial dark + warm amber design system. All colors HSL. */
+/* CorePro Techno LLP — Bold dark canvas with red-orange + electric blue. All colors HSL. */
 
 @layer base {
   :root {
-    /* Deep matte black canvas with warm amber accents */
-    --background: 50 10% 4%;        /* #0A0A08 deep matte black */
-    --foreground: 40 30% 96%;
+    /* Near-black canvas with subtle indigo undertone (matches coreprotechno.com) */
+    --background: 252 40% 4%;        /* #0A0612 deep ink */
+    --foreground: 0 0% 98%;
 
-    --card: 45 10% 7%;
-    --card-foreground: 40 30% 96%;
+    --card: 250 30% 7%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 45 12% 8%;
-    --popover-foreground: 40 30% 96%;
+    --popover: 250 35% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Primary = rich amber/gold */
-    --primary: 39 80% 52%;          /* #E8A020 */
-    --primary-foreground: 50 10% 4%;
-    --primary-hover: 39 85% 58%;
-    --primary-glow: 39 90% 62%;
+    /* Primary = brand red-orange (#FF3D2E) */
+    --primary: 5 100% 59%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 5 100% 64%;
+    --primary-glow: 12 100% 62%;
 
-    /* Secondary = deeper amber/bronze */
-    --secondary: 32 60% 45%;
-    --secondary-foreground: 50 10% 4%;
+    /* Secondary = electric blue (#3D8BFF) */
+    --secondary: 217 100% 62%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 45 8% 12%;
-    --muted-foreground: 40 12% 68%;
+    --muted: 250 20% 13%;
+    --muted-foreground: 240 8% 68%;
 
-    --accent: 39 50% 14%;
-    --accent-foreground: 39 80% 75%;
+    --accent: 5 80% 14%;
+    --accent-foreground: 5 100% 75%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --success: 142 55% 48%;
-    --success-foreground: 50 10% 4%;
+    --success-foreground: 0 0% 100%;
 
     --warning: 38 95% 60%;
-    --warning-foreground: 50 10% 4%;
+    --warning-foreground: 252 40% 4%;
 
-    --border: 40 10% 16%;
-    --input: 40 10% 16%;
-    --ring: 39 80% 52%;
+    --border: 250 15% 16%;
+    --input: 250 15% 16%;
+    --ring: 5 100% 59%;
 
     --radius: 0.875rem;
 
-    --sidebar-background: 48 12% 3%;
-    --sidebar-foreground: 40 12% 72%;
-    --sidebar-primary: 39 80% 52%;
-    --sidebar-primary-foreground: 50 10% 4%;
-    --sidebar-accent: 45 10% 9%;
-    --sidebar-accent-foreground: 39 80% 70%;
-    --sidebar-border: 45 10% 10%;
-    --sidebar-ring: 39 80% 52%;
+    --sidebar-background: 252 45% 3%;
+    --sidebar-foreground: 240 10% 72%;
+    --sidebar-primary: 5 100% 59%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 250 25% 9%;
+    --sidebar-accent-foreground: 5 100% 70%;
+    --sidebar-border: 250 18% 11%;
+    --sidebar-ring: 5 100% 59%;
 
-    /* Gradients — solid amber accent (no blue/purple) */
-    --gradient-primary: linear-gradient(135deg, hsl(39 80% 52%), hsl(32 75% 45%));
+    /* Gradients — red-orange to electric blue (signature CorePro sweep) */
+    --gradient-primary: linear-gradient(135deg, hsl(5 100% 59%), hsl(217 100% 62%));
+    --gradient-brand: linear-gradient(90deg, hsl(5 100% 59%) 0%, hsl(285 60% 50%) 55%, hsl(217 100% 62%) 100%);
     --gradient-glow:
-      radial-gradient(circle at 20% 15%, hsl(39 80% 52% / 0.18), transparent 55%),
-      radial-gradient(circle at 85% 85%, hsl(32 70% 40% / 0.14), transparent 55%),
-      radial-gradient(circle at 50% 50%, hsl(39 60% 30% / 0.06), transparent 70%);
-    --gradient-card: linear-gradient(135deg, hsl(45 10% 9% / 0.85), hsl(48 12% 5% / 0.85));
+      radial-gradient(circle at 15% 20%, hsl(5 100% 55% / 0.18), transparent 55%),
+      radial-gradient(circle at 85% 85%, hsl(217 100% 55% / 0.16), transparent 55%),
+      radial-gradient(circle at 50% 50%, hsl(252 60% 30% / 0.10), transparent 70%);
+    --gradient-card: linear-gradient(135deg, hsl(250 30% 9% / 0.85), hsl(252 40% 5% / 0.85));
 
-    /* Subtle film-grain texture */
-    --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.91  0 0 0 0 0.62  0 0 0 0 0.13  0 0 0 0.045 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    /* Faint grid background (matches site's grid lines) */
+    --grid-overlay:
+      linear-gradient(to right, hsl(0 0% 100% / 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(0 0% 100% / 0.025) 1px, transparent 1px);
 
     /* Shadows + glows */
     --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.5);
     --shadow-md: 0 10px 30px -10px hsl(0 0% 0% / 0.6);
     --shadow-lg: 0 28px 56px -18px hsl(0 0% 0% / 0.7);
-    --glow-primary: 0 0 32px hsl(39 80% 52% / 0.32);
-    --glow-secondary: 0 0 24px hsl(32 60% 40% / 0.28);
+    --glow-primary: 0 0 32px hsl(5 100% 59% / 0.38);
+    --glow-secondary: 0 0 24px hsl(217 100% 62% / 0.32);
   }
 
   /* Optional light mode kept for parity */
   .light {
-    --background: 40 30% 98%;
-    --foreground: 50 10% 8%;
+    --background: 0 0% 98%;
+    --foreground: 252 40% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 50 10% 8%;
+    --card-foreground: 252 40% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 50 10% 8%;
-    --primary: 39 85% 45%;
+    --popover-foreground: 252 40% 8%;
+    --primary: 5 95% 52%;
     --primary-foreground: 0 0% 100%;
-    --primary-hover: 39 85% 38%;
-    --primary-glow: 39 90% 55%;
-    --secondary: 32 60% 40%;
+    --primary-hover: 5 95% 46%;
+    --primary-glow: 12 100% 58%;
+    --secondary: 217 90% 55%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 40 15% 94%;
-    --muted-foreground: 40 10% 40%;
-    --accent: 39 70% 94%;
-    --accent-foreground: 32 70% 30%;
+    --muted: 240 10% 94%;
+    --muted-foreground: 240 8% 40%;
+    --accent: 5 90% 95%;
+    --accent-foreground: 5 90% 35%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --success: 142 55% 38%;
     --success-foreground: 0 0% 100%;
     --warning: 38 92% 50%;
-    --warning-foreground: 50 10% 8%;
-    --border: 40 15% 88%;
-    --input: 40 15% 88%;
-    --ring: 39 85% 45%;
+    --warning-foreground: 252 40% 8%;
+    --border: 240 10% 88%;
+    --input: 240 10% 88%;
+    --ring: 5 95% 52%;
   }
 }
 
@@ -120,19 +123,20 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background-image: var(--grain);
-    background-size: 160px 160px;
-    opacity: 0.5;
-    mix-blend-mode: overlay;
+    background-image: var(--grid-overlay);
+    background-size: 56px 56px;
+    opacity: 0.6;
     z-index: 0;
   }
   h1, h2, h3, h4 {
     @apply tracking-tight;
-    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
-    font-weight: 600;
+    font-family: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
   }
-  .font-serif-display {
-    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  .font-display {
+    font-family: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
   .font-sans-ui {
     font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -149,7 +153,7 @@
     @apply backdrop-blur-2xl border border-white/5 rounded-xl;
     box-shadow: var(--shadow-md);
   }
-  /* Editorial card with thin amber top accent bar */
+  /* Card with thin brand-gradient top accent bar */
   .card-editorial {
     @apply card-glass relative overflow-hidden;
   }
@@ -160,7 +164,8 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary)), transparent);
+    background: var(--gradient-brand);
+    opacity: 0.85;
   }
   .stat-card {
     @apply card-glass p-5 flex flex-col gap-2 relative overflow-hidden;
@@ -174,15 +179,16 @@
     transition: opacity 0.3s;
     pointer-events: none;
   }
-  .stat-card:hover::before { opacity: 0.04; }
+  .stat-card:hover::before { opacity: 0.06; }
 
   .text-gradient {
-    background: var(--gradient-primary);
+    background: var(--gradient-brand);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  .text-amber-accent { color: hsl(var(--primary)); }
+  .text-brand-red { color: hsl(var(--primary)); }
+  .text-brand-blue { color: hsl(var(--secondary)); }
 
   .micro-label {
     @apply uppercase tracking-[0.18em] text-[10px] font-semibold text-muted-foreground;
@@ -192,35 +198,35 @@
   .glow-secondary { box-shadow: var(--glow-secondary); }
 
   .btn-gradient {
-    background: hsl(var(--primary));
-    @apply text-primary-foreground font-medium;
+    background: var(--gradient-primary);
+    @apply text-primary-foreground font-semibold;
     transition: background-color 0.2s, filter 0.2s, transform 0.2s, box-shadow 0.2s;
   }
   .btn-gradient:hover {
-    background: hsl(var(--primary-hover));
-    filter: brightness(1.1);
+    filter: brightness(1.08);
     box-shadow: var(--glow-primary);
   }
 
-  .btn-amber {
-    background: hsl(var(--primary));
+  .btn-brand {
+    background: var(--gradient-primary);
     color: hsl(var(--primary-foreground));
     @apply font-semibold uppercase tracking-[0.14em] text-xs;
-    transition: background-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    transition: filter 0.2s, box-shadow 0.2s, transform 0.15s;
   }
-  .btn-amber:hover {
-    background: hsl(var(--primary-hover));
+  .btn-brand:hover {
+    filter: brightness(1.08);
     box-shadow: var(--glow-primary);
   }
-  .btn-amber:active { transform: translateY(1px); }
+  .btn-brand:active { transform: translateY(1px); }
 
   .neon-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), hsl(var(--secondary) / 0.5), transparent);
   }
-  .amber-divider {
+  .brand-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.6), transparent);
+    background: var(--gradient-brand);
+    opacity: 0.6;
   }
 
   .scrollbar-thin::-webkit-scrollbar { height: 8px; width: 8px; }
