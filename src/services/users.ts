@@ -4,6 +4,7 @@ export interface UserRow {
   id: string;
   name: string;
   email: string;
+  job_position: string;
   role: "admin" | "user";
   created_at: string;
 }
@@ -26,6 +27,7 @@ export async function listUsers(): Promise<UserRow[]> {
       id: p.id,
       name: p.name,
       email: p.email,
+      job_position: (p as any).job_position ?? "",
       role,
       created_at: p.created_at,
     };
@@ -37,6 +39,7 @@ export async function adminCreateUser(input: {
   password: string;
   name: string;
   role: "admin" | "user";
+  job_position?: string;
 }) {
   const { data, error } = await supabase.functions.invoke("admin-create-user", {
     body: input,
@@ -51,6 +54,7 @@ export async function adminUpdateUser(input: {
   name?: string;
   role?: "admin" | "user";
   password?: string;
+  job_position?: string;
 }) {
   const { data, error } = await supabase.functions.invoke("admin-update-user", {
     body: input,
