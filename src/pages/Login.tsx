@@ -45,22 +45,22 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4 relative overflow-hidden">
-      {/* Warm amber glow radials */}
-      <div className="absolute -top-40 -left-40 h-[28rem] w-[28rem] rounded-full bg-primary/20 blur-[140px]" />
-      <div className="absolute -bottom-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-primary/10 blur-[160px]" />
+      {/* Brand glow radials — red-orange + electric blue */}
+      <div className="absolute -top-40 -left-40 h-[28rem] w-[28rem] rounded-full bg-primary/25 blur-[140px]" />
+      <div className="absolute -bottom-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-secondary/20 blur-[160px]" />
 
       <div className="w-full max-w-md relative z-10 animate-fade-in">
         <div className="flex items-center justify-center gap-3 mb-10">
           <img src={logo} alt="CorePro Techno LLP" className="h-12 w-12 rounded-xl object-contain glow-primary" />
-          <h1 className="font-serif-display text-2xl font-semibold leading-tight text-foreground">
+          <h1 className="font-display text-2xl leading-tight text-foreground uppercase">
             CorePro<br />
-            <span className="text-amber-accent">Techno LLP</span>
+            <span className="text-gradient">Techno LLP</span>
           </h1>
         </div>
         <div className="card-editorial p-9">
           <p className="micro-label mb-3">Welcome back</p>
-          <h2 className="font-serif-display text-3xl font-semibold mb-3">Sign in</h2>
-          <div className="amber-divider mb-6 w-16" />
+          <h2 className="font-display text-3xl mb-3">Sign in</h2>
+          <div className="brand-divider mb-6 w-16" />
           <p className="text-sm text-muted-foreground mb-7">
             Access your CorePro workspace
           </p>
@@ -102,7 +102,7 @@ const Login = () => {
                 <p className="text-xs text-destructive">{errors.password.message}</p>
               )}
             </div>
-            <Button type="submit" className="w-full btn-amber h-12 mt-2" disabled={submitting}>
+            <Button type="submit" className="w-full btn-brand h-12 mt-2" disabled={submitting}>
               {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Sign in
             </Button>
