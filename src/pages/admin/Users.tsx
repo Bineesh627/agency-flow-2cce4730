@@ -15,10 +15,10 @@ import { Plus, Shield, User as UserIcon } from "lucide-react";
 import { toast } from "sonner";
 
 interface CreateValues {
-  email: string; name: string; password: string; role: "admin" | "user";
+  email: string; name: string; password: string; role: "admin" | "user"; job_position: string;
 }
 interface EditValues {
-  name: string; role: "admin" | "user"; password: string;
+  name: string; role: "admin" | "user"; password: string; job_position: string;
 }
 
 const Users = () => {
@@ -28,7 +28,7 @@ const Users = () => {
 
   const usersQ = useQuery({ queryKey: ["users"], queryFn: listUsers });
 
-  const createForm = useForm<CreateValues>({ defaultValues: { role: "user" } });
+  const createForm = useForm<CreateValues>({ defaultValues: { role: "user", job_position: "" } });
   const editForm = useForm<EditValues>();
 
   const createMut = useMutation({
@@ -36,7 +36,7 @@ const Users = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["users"] });
       toast.success("User created");
-      setCreateOpen(false); createForm.reset({ role: "user" });
+      setCreateOpen(false); createForm.reset({ role: "user", job_position: "" });
     },
     onError: (e: any) => toast.error(e.message),
   });
@@ -54,7 +54,7 @@ const Users = () => {
 
   const openEdit = (u: UserRow) => {
     setEditing(u);
-    editForm.reset({ name: u.name, role: u.role, password: "" });
+    editForm.reset({ name: u.name, role: u.role, password: "", job_position: u.job_position ?? "" });
   };
 
   return (
@@ -78,6 +78,14 @@ const Users = () => {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" {...createForm.register("email", { required: true, maxLength: 255 })} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="job_position">Job position</Label>
+                <Input
+                  id="job_position"
+                  placeholder="e.g. Frontend Developer"
+                  {...createForm.register("job_position", { maxLength: 100 })}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Temporary password</Label>
@@ -110,6 +118,7 @@ const Users = () => {
           <thead className="text-xs text-muted-foreground bg-muted/40">
             <tr>
               <th className="text-left px-6 py-3">Name</th>
+              <th className="text-left px-6 py-3">Job position</th>
               <th className="text-left px-6 py-3">Email</th>
               <th className="text-left px-6 py-3">Role</th>
               <th className="text-left px-6 py-3">Created</th>
@@ -120,6 +129,7 @@ const Users = () => {
             {(usersQ.data ?? []).map((u) => (
               <tr key={u.id} className="border-t border-border">
                 <td className="px-6 py-3 font-medium">{u.name || "—"}</td>
+                <td className="px-6 py-3 text-muted-foreground">{u.job_position || "—"}</td>
                 <td className="px-6 py-3 text-muted-foreground">{u.email}</td>
                 <td className="px-6 py-3">
                   <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-md ${
@@ -136,7 +146,7 @@ const Users = () => {
               </tr>
             ))}
             {(usersQ.data ?? []).length === 0 && !usersQ.isLoading && (
-              <tr><td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">No users yet</td></tr>
+              <tr><td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">No users yet</td></tr>
             )}
           </tbody>
         </table>
@@ -148,7 +158,12 @@ const Users = () => {
           {editing && (
             <form
               onSubmit={editForm.handleSubmit((v) => {
-                const payload: any = { user_id: editing.id, name: v.name, role: v.role };
+                const payload: any = {
+                  user_id: editing.id,
+                  name: v.name,
+                  role: v.role,
+                  job_position: v.job_position,
+                };
                 if (v.password) payload.password = v.password;
                 updateMut.mutate(payload);
               })}
@@ -157,6 +172,13 @@ const Users = () => {
               <div className="space-y-2">
                 <Label>Name</Label>
                 <Input {...editForm.register("name", { required: true, maxLength: 100 })} />
+              </div>
+              <div className="space-y-2">
+                <Label>Job position</Label>
+                <Input
+                  placeholder="e.g. Frontend Developer"
+                  {...editForm.register("job_position", { maxLength: 100 })}
+                />
               </div>
               <div className="space-y-2">
                 <Label>Role</Label>
