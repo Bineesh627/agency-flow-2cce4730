@@ -123,19 +123,20 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background-image: var(--grain);
-    background-size: 160px 160px;
-    opacity: 0.5;
-    mix-blend-mode: overlay;
+    background-image: var(--grid-overlay);
+    background-size: 56px 56px;
+    opacity: 0.6;
     z-index: 0;
   }
   h1, h2, h3, h4 {
     @apply tracking-tight;
-    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
-    font-weight: 600;
+    font-family: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
   }
-  .font-serif-display {
-    font-family: "Playfair Display", Georgia, "Times New Roman", serif;
+  .font-display {
+    font-family: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
   .font-sans-ui {
     font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -152,7 +153,7 @@
     @apply backdrop-blur-2xl border border-white/5 rounded-xl;
     box-shadow: var(--shadow-md);
   }
-  /* Editorial card with thin amber top accent bar */
+  /* Card with thin brand-gradient top accent bar */
   .card-editorial {
     @apply card-glass relative overflow-hidden;
   }
@@ -163,7 +164,8 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary)), transparent);
+    background: var(--gradient-brand);
+    opacity: 0.85;
   }
   .stat-card {
     @apply card-glass p-5 flex flex-col gap-2 relative overflow-hidden;
@@ -177,15 +179,16 @@
     transition: opacity 0.3s;
     pointer-events: none;
   }
-  .stat-card:hover::before { opacity: 0.04; }
+  .stat-card:hover::before { opacity: 0.06; }
 
   .text-gradient {
-    background: var(--gradient-primary);
+    background: var(--gradient-brand);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  .text-amber-accent { color: hsl(var(--primary)); }
+  .text-brand-red { color: hsl(var(--primary)); }
+  .text-brand-blue { color: hsl(var(--secondary)); }
 
   .micro-label {
     @apply uppercase tracking-[0.18em] text-[10px] font-semibold text-muted-foreground;
@@ -195,35 +198,35 @@
   .glow-secondary { box-shadow: var(--glow-secondary); }
 
   .btn-gradient {
-    background: hsl(var(--primary));
-    @apply text-primary-foreground font-medium;
+    background: var(--gradient-primary);
+    @apply text-primary-foreground font-semibold;
     transition: background-color 0.2s, filter 0.2s, transform 0.2s, box-shadow 0.2s;
   }
   .btn-gradient:hover {
-    background: hsl(var(--primary-hover));
-    filter: brightness(1.1);
+    filter: brightness(1.08);
     box-shadow: var(--glow-primary);
   }
 
-  .btn-amber {
-    background: hsl(var(--primary));
+  .btn-brand {
+    background: var(--gradient-primary);
     color: hsl(var(--primary-foreground));
     @apply font-semibold uppercase tracking-[0.14em] text-xs;
-    transition: background-color 0.2s, box-shadow 0.2s, transform 0.15s;
+    transition: filter 0.2s, box-shadow 0.2s, transform 0.15s;
   }
-  .btn-amber:hover {
-    background: hsl(var(--primary-hover));
+  .btn-brand:hover {
+    filter: brightness(1.08);
     box-shadow: var(--glow-primary);
   }
-  .btn-amber:active { transform: translateY(1px); }
+  .btn-brand:active { transform: translateY(1px); }
 
   .neon-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent);
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), hsl(var(--secondary) / 0.5), transparent);
   }
-  .amber-divider {
+  .brand-divider {
     height: 1px;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.6), transparent);
+    background: var(--gradient-brand);
+    opacity: 0.6;
   }
 
   .scrollbar-thin::-webkit-scrollbar { height: 8px; width: 8px; }
