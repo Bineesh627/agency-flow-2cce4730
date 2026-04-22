@@ -317,6 +317,14 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
       }
+      get_public_profiles: {
+        Args: { _ids: string[] }
+        Returns: {
+          id: string
+          job_position: string
+          name: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
