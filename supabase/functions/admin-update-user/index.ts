@@ -12,6 +12,7 @@ interface UpdatePayload {
   name?: string;
   role?: "admin" | "user";
   password?: string;
+  job_position?: string;
 }
 
 Deno.serve(async (req) => {
@@ -56,10 +57,14 @@ Deno.serve(async (req) => {
       if (error) return json({ error: error.message }, 400);
     }
 
-    if (payload.name !== undefined) {
-      const { error } = await adminClient.from("profiles").update({
-        name: payload.name,
-      }).eq("id", payload.user_id);
+    if (payload.name !== undefined || payload.job_position !== undefined) {
+      const update: Record<string, string> = {};
+      if (payload.name !== undefined) update.name = payload.name;
+      if (payload.job_position !== undefined) update.job_position = payload.job_position;
+      const { error } = await adminClient.from("profiles").update(update).eq(
+        "id",
+        payload.user_id,
+      );
       if (error) return json({ error: error.message }, 400);
     }
 

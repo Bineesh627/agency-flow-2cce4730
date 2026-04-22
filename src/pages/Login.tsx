@@ -6,8 +6,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import logo from "@/assets/logo.png";
 
 interface FormValues {
   email: string;
@@ -49,10 +50,10 @@ const Login = () => {
 
       <div className="w-full max-w-md relative z-10 animate-fade-in">
         <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="h-12 w-12 rounded-xl bg-gradient-primary flex items-center justify-center glow-primary">
-            <Sparkles className="h-6 w-6 text-primary-foreground" />
-          </div>
-          <h1 className="text-3xl font-bold text-gradient">Agency PM</h1>
+          <img src={logo} alt="CorePro Techno LLP" className="h-12 w-12 rounded-xl object-contain glow-primary" />
+          <h1 className="text-2xl font-bold text-gradient leading-tight">
+            CorePro<br />Techno LLP
+          </h1>
         </div>
         <div className="card-glass p-8">
           <h2 className="text-2xl font-bold mb-1">Sign in</h2>

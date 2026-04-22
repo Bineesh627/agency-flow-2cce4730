@@ -8,10 +8,10 @@ import {
   Users,
   CalendarCheck,
   LogOut,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/logo.png";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, isAdmin } = useAuth();
@@ -36,10 +36,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen flex w-full bg-background">
       <aside className="hidden md:flex w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
         <div className="h-16 flex items-center gap-2 px-6 border-b border-sidebar-border">
-          <div className="h-9 w-9 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary">
-            <Sparkles className="h-4 w-4 text-primary-foreground" />
-          </div>
-          <span className="font-bold text-base text-gradient">Agency PM</span>
+          <img src={logo} alt="CorePro Techno LLP" className="h-9 w-9 rounded-lg object-contain" />
+          <span className="font-bold text-sm text-gradient leading-tight">
+            CorePro<br />Techno LLP
+          </span>
         </div>
         <nav className="flex-1 p-3 space-y-1">
           {navItems.map((item) => (
@@ -76,10 +76,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col min-w-0">
         <header className="md:hidden h-14 flex items-center justify-between px-4 border-b border-border bg-card/70 backdrop-blur-md">
           <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-md bg-gradient-primary flex items-center justify-center">
-              <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-gradient">Agency PM</span>
+            <img src={logo} alt="CorePro Techno LLP" className="h-7 w-7 rounded-md object-contain" />
+            <span className="font-bold text-gradient text-sm">CorePro Techno LLP</span>
           </div>
           <Button variant="ghost" size="sm" onClick={handleSignOut}>
             <LogOut className="h-4 w-4" />
