@@ -11,7 +11,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Plus, Shield, User as UserIcon } from "lucide-react";
+import { Plus, Shield, User as UserIcon, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 interface CreateValues {
@@ -25,6 +25,8 @@ const Users = () => {
   const qc = useQueryClient();
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<UserRow | null>(null);
+  const [showCreatePwd, setShowCreatePwd] = useState(false);
+  const [showEditPwd, setShowEditPwd] = useState(false);
 
   const usersQ = useQuery({ queryKey: ["users"], queryFn: listUsers });
 
@@ -89,7 +91,23 @@ const Users = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Temporary password</Label>
-                <Input id="password" type="text" {...createForm.register("password", { required: true, minLength: 8, maxLength: 128 })} />
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showCreatePwd ? "text" : "password"}
+                    className="pr-10"
+                    {...createForm.register("password", { required: true, minLength: 8, maxLength: 128 })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCreatePwd((v) => !v)}
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label={showCreatePwd ? "Hide password" : "Show password"}
+                    tabIndex={-1}
+                  >
+                    {showCreatePwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
                 <p className="text-xs text-muted-foreground">Min 8 characters. Share with the user securely.</p>
               </div>
               <div className="space-y-2">
@@ -195,7 +213,22 @@ const Users = () => {
               </div>
               <div className="space-y-2">
                 <Label>New password (optional)</Label>
-                <Input type="text" {...editForm.register("password", { maxLength: 128 })} />
+                <div className="relative">
+                  <Input
+                    type={showEditPwd ? "text" : "password"}
+                    className="pr-10"
+                    {...editForm.register("password", { maxLength: 128 })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowEditPwd((v) => !v)}
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label={showEditPwd ? "Hide password" : "Show password"}
+                    tabIndex={-1}
+                  >
+                    {showEditPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
                 <p className="text-xs text-muted-foreground">Leave blank to keep current password.</p>
               </div>
               <DialogFooter>
