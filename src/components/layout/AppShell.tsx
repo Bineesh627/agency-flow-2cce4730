@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/img/logo.png";
+import logo from "@/assets/logo.png";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { user, isAdmin } = useAuth();
@@ -35,12 +35,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex w-full bg-background">
       <aside className="hidden md:flex w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
-        <div className="h-16 flex items-center gap-3 px-6 border-b border-sidebar-border">
+        <div className="h-16 flex items-center gap-2 px-6 border-b border-sidebar-border">
           <img src={logo} alt="CorePro Techno LLP" className="h-9 w-9 rounded-lg object-contain" />
-          <div className="flex flex-col leading-tight">
-            <span className="font-bold text-sm text-gradient">CorePro</span>
-            <span className="font-semibold text-xs text-sidebar-foreground/70">Techno LLP</span>
-          </div>
+          <span className="font-bold text-sm text-gradient leading-tight">
+            CorePro<br />Techno LLP
+          </span>
         </div>
         <nav className="flex-1 p-3 space-y-1">
           {navItems.map((item) => (
@@ -59,7 +58,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
         <div className="p-3 border-t border-sidebar-border">
           <div className="px-3 py-2.5 mb-2 rounded-lg bg-sidebar-accent/40">
-            <div className="text-sm text-sidebar-foreground truncate font-medium">{user?.email}</div>
+            <div className="text-sm text-sidebar-primary-foreground truncate font-medium">{user?.email}</div>
             <div className="text-xs text-sidebar-foreground/60 mt-0.5">
               {isAdmin ? "✦ Administrator" : "Member"}
             </div>
@@ -78,10 +77,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <header className="md:hidden h-14 flex items-center justify-between px-4 border-b border-border bg-card/70 backdrop-blur-md">
           <div className="flex items-center gap-2">
             <img src={logo} alt="CorePro Techno LLP" className="h-7 w-7 rounded-md object-contain" />
-            <div className="flex flex-col leading-tight">
-              <span className="font-bold text-sm text-gradient">CorePro</span>
-              <span className="font-semibold text-[10px] text-muted-foreground">Techno LLP</span>
-            </div>
+            <span className="font-bold text-gradient text-sm">CorePro Techno LLP</span>
           </div>
           <Button variant="ghost" size="sm" onClick={handleSignOut}>
             <LogOut className="h-4 w-4" />

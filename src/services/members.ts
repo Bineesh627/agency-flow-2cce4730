@@ -6,7 +6,7 @@ export interface ProjectMember {
   user_id: string;
   role: string;
   created_at: string;
-  profile?: { name: string; email: string } | null;
+  profile?: { name: string; email?: string; job_position?: string } | null;
 }
 
 export async function getProjectMembers(projectId: string): Promise<ProjectMember[]> {
@@ -18,15 +18,29 @@ export async function getProjectMembers(projectId: string): Promise<ProjectMembe
   if (error) throw error;
 
   const ids = Array.from(new Set((data ?? []).map((m) => m.user_id)));
-  let profileMap: Record<string, { name: string; email: string }> = {};
+  let profileMap: Record<string, { name: string; email?: string; job_position?: string }> = {};
   if (ids.length > 0) {
-    const { data: profs } = await supabase
-      .from("profiles")
-      .select("id, name, email")
-      .in("id", ids);
+    // Use a SECURITY DEFINER RPC so non-admins can see name + job_position
+    // of other members, but never their email.
+    const { data: pubProfs } = await supabase.rpc("get_public_profiles", {
+      _ids: ids,
+    });
     profileMap = Object.fromEntries(
-      (profs ?? []).map((p) => [p.id, { name: p.name, email: p.email }]),
+      ((pubProfs ?? []) as Array<{ id: string; name: string; job_position: string }>).map(
+        (p) => [p.id, { name: p.name, job_position: p.job_position }],
+      ),
     );
+
+    // Admins additionally get email via direct profiles read (RLS allows it).
+    const { data: adminProfs } = await supabase
+      .from("profiles")
+      .select("id, email")
+      .in("id", ids);
+    if (adminProfs) {
+      for (const p of adminProfs) {
+        profileMap[p.id] = { ...(profileMap[p.id] ?? { name: "" }), email: p.email };
+      }
+    }
   }
   return (data ?? []).map((m) => ({ ...m, profile: profileMap[m.user_id] ?? null }));
 }

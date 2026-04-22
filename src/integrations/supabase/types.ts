@@ -114,6 +114,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          job_position: string
           name: string
           updated_at: string
         }
@@ -121,6 +122,7 @@ export type Database = {
           created_at?: string
           email: string
           id: string
+          job_position?: string
           name?: string
           updated_at?: string
         }
@@ -128,6 +130,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          job_position?: string
           name?: string
           updated_at?: string
         }
@@ -313,6 +316,14 @@ export type Database = {
       current_user_role: {
         Args: never
         Returns: Database["public"]["Enums"]["app_role"]
+      }
+      get_public_profiles: {
+        Args: { _ids: string[] }
+        Returns: {
+          id: string
+          job_position: string
+          name: string
+        }[]
       }
       has_role: {
         Args: {

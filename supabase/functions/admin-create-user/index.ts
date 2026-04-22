@@ -12,6 +12,7 @@ interface CreateUserPayload {
   password: string;
   name: string;
   role: "admin" | "user";
+  job_position?: string;
 }
 
 Deno.serve(async (req) => {
@@ -86,10 +87,10 @@ Deno.serve(async (req) => {
     }
 
     // Ensure profile name reflects the input (in case metadata path missed)
-    await adminClient.from("profiles").update({ name: payload.name }).eq(
-      "id",
-      created.user.id,
-    );
+    await adminClient.from("profiles").update({
+      name: payload.name,
+      job_position: payload.job_position ?? "",
+    }).eq("id", created.user.id);
 
     return json({ user: { id: created.user.id, email: created.user.email } });
   } catch (e) {
