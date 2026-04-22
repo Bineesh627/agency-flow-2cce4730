@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { adminCreateUser, adminUpdateUser, listUsers, type UserRow } from "@/services/users";
+import { adminCreateUser, adminUpdateUser, adminToggleUserActive, listUsers, type UserRow } from "@/services/users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,8 +11,9 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Plus, Shield, User as UserIcon, Eye, EyeOff } from "lucide-react";
+import { Plus, Shield, User as UserIcon, Eye, EyeOff, UserX, UserCheck } from "lucide-react";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 interface CreateValues {
   email: string; name: string; password: string; role: "admin" | "user"; job_position: string;
@@ -50,6 +51,16 @@ const Users = () => {
       qc.invalidateQueries({ queryKey: ["users"] });
       toast.success("User updated");
       setEditing(null); editForm.reset();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const toggleActiveMut = useMutation({
+    mutationFn: ({ user_id, is_active }: { user_id: string; is_active: boolean }) =>
+      adminToggleUserActive(user_id, is_active),
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: ["users"] });
+      toast.success(vars.is_active ? "User reactivated" : "User deactivated");
     },
     onError: (e: any) => toast.error(e.message),
   });
@@ -139,13 +150,19 @@ const Users = () => {
               <th className="text-left px-6 py-3">Job position</th>
               <th className="text-left px-6 py-3">Email</th>
               <th className="text-left px-6 py-3">Role</th>
+              <th className="text-left px-6 py-3">Status</th>
               <th className="text-left px-6 py-3">Created</th>
               <th className="text-right px-6 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>
             {(usersQ.data ?? []).map((u) => (
-              <tr key={u.id} className="border-t border-border">
+              <tr
+                key={u.id}
+                className={`border-t border-border transition-colors ${
+                  u.is_active ? "" : "opacity-50 bg-muted/20"
+                }`}
+              >
                 <td className="px-6 py-3 font-medium">{u.name || "—"}</td>
                 <td className="px-6 py-3 text-muted-foreground">{u.job_position || "—"}</td>
                 <td className="px-6 py-3 text-muted-foreground">{u.email}</td>
@@ -157,9 +174,49 @@ const Users = () => {
                     {u.role}
                   </span>
                 </td>
+                <td className="px-6 py-3">
+                  <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium ${
+                    u.is_active
+                      ? "bg-emerald-500/15 text-emerald-500"
+                      : "bg-destructive/15 text-destructive"
+                  }`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${
+                      u.is_active ? "bg-emerald-500" : "bg-destructive"
+                    }`} />
+                    {u.is_active ? "Active" : "Deactivated"}
+                  </span>
+                </td>
                 <td className="px-6 py-3 text-muted-foreground">{new Date(u.created_at).toLocaleDateString()}</td>
                 <td className="px-6 py-3 text-right">
-                  <Button variant="ghost" size="sm" onClick={() => openEdit(u)}>Edit</Button>
+                  <div className="flex items-center justify-end gap-1">
+                    <Button variant="ghost" size="sm" onClick={() => openEdit(u)}>Edit</Button>
+                    {u.is_active ? (
+                      <ConfirmDialog
+                        trigger={
+                          <Button
+                            variant="ghost" size="sm"
+                            className="text-destructive hover:text-destructive"
+                            disabled={toggleActiveMut.isPending}
+                          >
+                            <UserX className="h-3.5 w-3.5 mr-1" /> Deactivate
+                          </Button>
+                        }
+                        title={`Deactivate ${u.name || u.email}?`}
+                        description="This user will be immediately signed out and blocked from logging in. You can reactivate them at any time."
+                        confirmLabel="Deactivate"
+                        onConfirm={() => toggleActiveMut.mutate({ user_id: u.id, is_active: false })}
+                      />
+                    ) : (
+                      <Button
+                        variant="ghost" size="sm"
+                        className="text-emerald-500 hover:text-emerald-500"
+                        disabled={toggleActiveMut.isPending}
+                        onClick={() => toggleActiveMut.mutate({ user_id: u.id, is_active: true })}
+                      >
+                        <UserCheck className="h-3.5 w-3.5 mr-1" /> Reactivate
+                      </Button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}

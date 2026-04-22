@@ -7,6 +7,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Upload, FileText, Image as ImageIcon, FileSpreadsheet, Download, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const iconFor = (mime: string) => {
   if (mime.startsWith("image/")) return ImageIcon;
@@ -133,13 +134,20 @@ export function ProjectDocuments({ projectId, isAdmin }: { projectId: string; is
                       <Download className="h-3.5 w-3.5 mr-1" /> Open
                     </Button>
                     {isAdmin && (
-                      <Button
-                        size="sm" variant="ghost"
-                        className="h-7 px-2 text-destructive hover:text-destructive"
-                        onClick={() => confirm(`Delete "${doc.name}"?`) && deleteMut.mutate(doc)}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                      <ConfirmDialog
+                        trigger={
+                          <Button
+                            size="sm" variant="ghost"
+                            className="h-7 px-2 text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        }
+                        title={`Delete "${doc.name}"?`}
+                        description="This document will be permanently removed from the project."
+                        confirmLabel="Delete document"
+                        onConfirm={() => deleteMut.mutate(doc)}
+                      />
                     )}
                   </div>
                 </div>

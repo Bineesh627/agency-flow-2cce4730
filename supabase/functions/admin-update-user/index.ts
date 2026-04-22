@@ -13,6 +13,7 @@ interface UpdatePayload {
   role?: "admin" | "user";
   password?: string;
   job_position?: string;
+  is_active?: boolean;
 }
 
 Deno.serve(async (req) => {
@@ -76,6 +77,22 @@ Deno.serve(async (req) => {
         : [{ user_id: payload.user_id, role: "user" }];
       const { error } = await adminClient.from("user_roles").insert(rolesToInsert);
       if (error) return json({ error: error.message }, 400);
+    }
+
+    if (payload.is_active !== undefined) {
+      // Update profile flag
+      const { error: pfErr } = await adminClient
+        .from("profiles")
+        .update({ is_active: payload.is_active })
+        .eq("id", payload.user_id);
+      if (pfErr) return json({ error: pfErr.message }, 400);
+
+      // Ban / unban in Supabase Auth so the user cannot log in while inactive
+      const { error: authErr } = await adminClient.auth.admin.updateUserById(
+        payload.user_id,
+        { ban_duration: payload.is_active ? "none" : "876600h" }, // ~100 years = effectively banned
+      );
+      if (authErr) return json({ error: authErr.message }, 400);
     }
 
     return json({ ok: true });

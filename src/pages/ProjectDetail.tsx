@@ -22,6 +22,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Plus, ArrowLeft, Trash2, KanbanSquare, GanttChart, Folder, Users as UsersIcon } from "lucide-react";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ProjectTimeline } from "@/components/projects/ProjectTimeline";
 import { ProjectDocuments } from "@/components/projects/ProjectDocuments";
 import { ProjectMembers } from "@/components/projects/ProjectMembers";
@@ -207,12 +208,17 @@ const ProjectDetail = () => {
                             {t.title}
                           </Link>
                           {isAdmin && (
-                            <button
-                              onClick={() => confirm(`Delete "${t.title}"?`) && deleteMut.mutate(t.id)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
-                            </button>
+                            <ConfirmDialog
+                              trigger={
+                                <button className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
+                                </button>
+                              }
+                              title={`Delete "${t.title}"?`}
+                              description="This task will be permanently deleted. This action cannot be undone."
+                              confirmLabel="Delete task"
+                              onConfirm={() => deleteMut.mutate(t.id)}
+                            />
                           )}
                         </div>
                         <div className="flex items-center justify-between mt-2">

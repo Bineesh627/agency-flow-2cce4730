@@ -11,6 +11,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
 } from "@/components/ui/dialog";
 import { Plus, Trash2, FolderKanban, ArrowRight } from "lucide-react";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -105,16 +106,17 @@ const Projects = () => {
                   )}
                 </Link>
                 {isAdmin && (
-                  <Button
-                    variant="ghost" size="icon"
-                    onClick={() => {
-                      if (confirm(`Delete project "${p.name}"? This will delete all its tasks.`)) {
-                        deleteMut.mutate(p.id);
-                      }
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-                  </Button>
+                  <ConfirmDialog
+                    trigger={
+                      <Button variant="ghost" size="icon">
+                        <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                      </Button>
+                    }
+                    title={`Delete "${p.name}"?`}
+                    description="This will permanently delete the project and all its tasks. This action cannot be undone."
+                    confirmLabel="Delete project"
+                    onConfirm={() => deleteMut.mutate(p.id)}
+                  />
                 )}
               </div>
               <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/40 relative">

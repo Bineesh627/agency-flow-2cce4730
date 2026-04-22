@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { Users as UsersIcon, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 export function ProjectMembers({ projectId, isAdmin }: { projectId: string; isAdmin: boolean }) {
   const qc = useQueryClient();
@@ -117,13 +118,20 @@ export function ProjectMembers({ projectId, isAdmin }: { projectId: string; isAd
                   </td>
                   {isAdmin && (
                     <td className="px-3 py-2 text-right">
-                      <button
-                        onClick={() => confirm("Remove this member?") && removeMut.mutate(m.id)}
-                        className="text-muted-foreground hover:text-destructive transition-colors"
-                        title="Remove member"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
+                      <ConfirmDialog
+                        trigger={
+                          <button
+                            className="text-muted-foreground hover:text-destructive transition-colors"
+                            title="Remove member"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        }
+                        title="Remove member?"
+                        description={`${m.profile?.name || "This user"} will lose access to this project.`}
+                        confirmLabel="Remove"
+                        onConfirm={() => removeMut.mutate(m.id)}
+                      />
                     </td>
                   )}
                 </tr>
