@@ -45,25 +45,28 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4 relative overflow-hidden">
-      {/* Glow orbs */}
-      <div className="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-primary/30 blur-[120px] animate-pulse-glow" />
-      <div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-secondary/30 blur-[120px] animate-pulse-glow" />
+      {/* Warm amber glow radials */}
+      <div className="absolute -top-40 -left-40 h-[28rem] w-[28rem] rounded-full bg-primary/20 blur-[140px]" />
+      <div className="absolute -bottom-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-primary/10 blur-[160px]" />
 
       <div className="w-full max-w-md relative z-10 animate-fade-in">
-        <div className="flex items-center justify-center gap-2 mb-8">
+        <div className="flex items-center justify-center gap-3 mb-10">
           <img src={logo} alt="CorePro Techno LLP" className="h-12 w-12 rounded-xl object-contain glow-primary" />
-          <h1 className="text-2xl font-bold text-gradient leading-tight">
-            CorePro<br />Techno LLP
+          <h1 className="font-serif-display text-2xl font-semibold leading-tight text-foreground">
+            CorePro<br />
+            <span className="text-amber-accent">Techno LLP</span>
           </h1>
         </div>
-        <div className="card-glass p-8">
-          <h2 className="text-2xl font-bold mb-1">Sign in</h2>
-          <p className="text-sm text-muted-foreground mb-6">
-            Access your agency workspace
+        <div className="card-editorial p-9">
+          <p className="micro-label mb-3">Welcome back</p>
+          <h2 className="font-serif-display text-3xl font-semibold mb-3">Sign in</h2>
+          <div className="amber-divider mb-6 w-16" />
+          <p className="text-sm text-muted-foreground mb-7">
+            Access your CorePro workspace
           </p>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="micro-label">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -76,7 +79,7 @@ const Login = () => {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="micro-label">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -99,12 +102,12 @@ const Login = () => {
                 <p className="text-xs text-destructive">{errors.password.message}</p>
               )}
             </div>
-            <Button type="submit" className="w-full btn-gradient h-11" disabled={submitting}>
+            <Button type="submit" className="w-full btn-amber h-12 mt-2" disabled={submitting}>
               {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
               Sign in
             </Button>
           </form>
-          <p className="text-xs text-muted-foreground mt-6 text-center">
+          <p className="text-xs text-muted-foreground mt-7 text-center tracking-wide">
             No account? Contact your administrator.
           </p>
         </div>

@@ -37,8 +37,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <aside className="hidden md:flex w-64 flex-col bg-sidebar text-sidebar-foreground border-r border-sidebar-border">
         <div className="h-16 flex items-center gap-2 px-6 border-b border-sidebar-border">
           <img src={logo} alt="CorePro Techno LLP" className="h-9 w-9 rounded-lg object-contain" />
-          <span className="font-bold text-sm text-gradient leading-tight">
-            CorePro<br />Techno LLP
+          <span className="font-serif-display font-semibold text-sm leading-tight text-foreground">
+            CorePro<br /><span className="text-amber-accent">Techno LLP</span>
           </span>
         </div>
         <nav className="flex-1 p-3 space-y-1">
@@ -77,7 +77,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <header className="md:hidden h-14 flex items-center justify-between px-4 border-b border-border bg-card/70 backdrop-blur-md">
           <div className="flex items-center gap-2">
             <img src={logo} alt="CorePro Techno LLP" className="h-7 w-7 rounded-md object-contain" />
-            <span className="font-bold text-gradient text-sm">CorePro Techno LLP</span>
+            <span className="font-serif-display font-semibold text-sm">
+              CorePro <span className="text-amber-accent">Techno LLP</span>
+            </span>
           </div>
           <Button variant="ghost" size="sm" onClick={handleSignOut}>
             <LogOut className="h-4 w-4" />
