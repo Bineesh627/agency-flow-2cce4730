@@ -6,6 +6,7 @@ import { getTask, updateTaskStatus, type TaskStatus } from "@/services/tasks";
 import { addComment, getComments } from "@/services/comments";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
@@ -112,7 +113,11 @@ const TaskDetail = () => {
               }}
               className="space-y-2"
             >
+              <Label htmlFor="comment" className="sr-only">Comment</Label>
               <Textarea
+                id="comment"
+                name="comment"
+                autoComplete="off"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="Write a comment…"

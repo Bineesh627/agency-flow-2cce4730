@@ -64,12 +64,12 @@ const Projects = () => {
               <form onSubmit={handleSubmit((v) => createMut.mutate(v))} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
-                  <Input id="name" {...register("name", { required: "Required", maxLength: 120 })} />
+                  <Input id="name" autoComplete="off" {...register("name", { required: "Required", maxLength: 120 })} />
                   {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="description">Description</Label>
-                  <Textarea id="description" {...register("description", { maxLength: 1000 })} />
+                  <Textarea id="description" autoComplete="off" {...register("description", { maxLength: 1000 })} />
                 </div>
                 <DialogFooter>
                   <Button type="submit" className="btn-gradient" disabled={createMut.isPending}>Create</Button>

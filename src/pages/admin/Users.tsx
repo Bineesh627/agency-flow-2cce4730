@@ -88,31 +88,35 @@ const Users = () => {
             </DialogHeader>
             <form onSubmit={createForm.handleSubmit((v) => createMut.mutate(v))} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" {...createForm.register("name", { required: true, maxLength: 100 })} />
+                <Label htmlFor="create-name">Name</Label>
+                <Input id="create-name" autoComplete="name" {...createForm.register("name", { required: true, maxLength: 100 })} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" {...createForm.register("email", { required: true, maxLength: 255 })} />
+                <Label htmlFor="create-email">Email</Label>
+                <Input id="create-email" type="email" autoComplete="email" {...createForm.register("email", { required: true, maxLength: 255 })} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="job_position">Job position</Label>
+                <Label htmlFor="create-job">Job position</Label>
                 <Input
-                  id="job_position"
+                  id="create-job"
+                  autoComplete="organization-title"
                   placeholder="e.g. Frontend Developer"
                   {...createForm.register("job_position", { maxLength: 100 })}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Temporary password</Label>
+                <Label htmlFor="create-password">Temporary password</Label>
                 <div className="relative">
                   <Input
-                    id="password"
+                    id="create-password"
                     type={showCreatePwd ? "text" : "password"}
+                    autoComplete="new-password"
                     className="pr-10"
                     {...createForm.register("password", { required: true, minLength: 8, maxLength: 128 })}
                   />
                   <button
+                    id="create-pwd-toggle"
+                    name="create-pwd-toggle"
                     type="button"
                     onClick={() => setShowCreatePwd((v) => !v)}
                     className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground transition-colors"
@@ -125,12 +129,13 @@ const Users = () => {
                 <p className="text-xs text-muted-foreground">Min 8 characters. Share with the user securely.</p>
               </div>
               <div className="space-y-2">
-                <Label>Role</Label>
+                <Label htmlFor="create-role">Role</Label>
                 <Select
+                  name="create-role"
                   value={createForm.watch("role")}
                   onValueChange={(v) => createForm.setValue("role", v as "admin" | "user")}
                 >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger id="create-role"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="user">User</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
@@ -138,7 +143,7 @@ const Users = () => {
                 </Select>
               </div>
               <DialogFooter>
-                <Button type="submit" disabled={createMut.isPending}>Create</Button>
+                <Button id="create-user-btn" name="create-user-btn" type="submit" disabled={createMut.isPending}>Create</Button>
               </DialogFooter>
             </form>
           </DialogContent>
@@ -251,23 +256,26 @@ const Users = () => {
               className="space-y-4"
             >
               <div className="space-y-2">
-                <Label>Name</Label>
-                <Input {...editForm.register("name", { required: true, maxLength: 100 })} />
+                <Label htmlFor="edit-name">Name</Label>
+                <Input id="edit-name" autoComplete="name" {...editForm.register("name", { required: true, maxLength: 100 })} />
               </div>
               <div className="space-y-2">
-                <Label>Job position</Label>
+                <Label htmlFor="edit-job">Job position</Label>
                 <Input
+                  id="edit-job"
+                  autoComplete="organization-title"
                   placeholder="e.g. Frontend Developer"
                   {...editForm.register("job_position", { maxLength: 100 })}
                 />
               </div>
               <div className="space-y-2">
-                <Label>Role</Label>
+                <Label htmlFor="edit-role">Role</Label>
                 <Select
+                  name="edit-role"
                   value={editForm.watch("role")}
                   onValueChange={(v) => editForm.setValue("role", v as "admin" | "user")}
                 >
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger id="edit-role"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="user">User</SelectItem>
                     <SelectItem value="admin">Admin</SelectItem>
@@ -275,14 +283,18 @@ const Users = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>New password (optional)</Label>
+                <Label htmlFor="edit-password">New password (optional)</Label>
                 <div className="relative">
                   <Input
+                    id="edit-password"
                     type={showEditPwd ? "text" : "password"}
+                    autoComplete="new-password"
                     className="pr-10"
                     {...editForm.register("password", { maxLength: 128 })}
                   />
                   <button
+                    id="edit-pwd-toggle"
+                    name="edit-pwd-toggle"
                     type="button"
                     onClick={() => setShowEditPwd((v) => !v)}
                     className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground transition-colors"
@@ -295,7 +307,7 @@ const Users = () => {
                 <p className="text-xs text-muted-foreground">Leave blank to keep current password.</p>
               </div>
               <DialogFooter>
-                <Button type="submit" disabled={updateMut.isPending}>Save</Button>
+                <Button id="edit-user-btn" name="edit-user-btn" type="submit" disabled={updateMut.isPending}>Save</Button>
               </DialogFooter>
             </form>
           )}

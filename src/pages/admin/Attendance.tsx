@@ -114,26 +114,32 @@ const AdminAttendance = () => {
               onSubmit={handleSubmit((v) => settingsMut.mutate(v))}
               className="space-y-2 text-xs"
             >
-              <Field label="Timezone">
+              <Field label="Timezone" htmlFor="timezone-select">
                 {/* Hidden RHF-registered input — value driven by the Select below */}
                 <input
+                  id="timezone-hidden"
                   type="hidden"
                   defaultValue={settingsQ.data.timezone}
                   {...register("timezone", { required: true })}
                 />
                 <div className="flex gap-2">
                   <Select
+                    name="timezone-display-select"
                     value={tzValue}
                     onValueChange={(v) =>
                       setValue("timezone", v, { shouldDirty: true, shouldValidate: true })
                     }
                   >
-                    <SelectTrigger className="h-9 flex-1">
+                    <SelectTrigger id="timezone-select" className="h-9 flex-1">
                       <SelectValue placeholder="Select timezone" />
                     </SelectTrigger>
                     <SelectContent className="max-h-72">
                       <div className="px-2 pt-2 pb-1 sticky top-0 bg-popover z-10">
+                        <Label htmlFor="timezone-search" className="sr-only">Search timezone</Label>
                         <Input
+                          id="timezone-search"
+                          name="timezone-search"
+                          autoComplete="off"
                           autoFocus
                           placeholder="Search timezone…"
                           value={tzFilter}
@@ -155,6 +161,8 @@ const AdminAttendance = () => {
                     </SelectContent>
                   </Select>
                   <Button
+                    id="use-browser-tz-btn"
+                    name="use-browser-tz-btn"
                     type="button"
                     variant="outline"
                     size="sm"
@@ -175,20 +183,20 @@ const AdminAttendance = () => {
                 </p>
               </Field>
               <div className="grid grid-cols-2 gap-2">
-                <Field label="Check-in start">
-                  <Input type="time" defaultValue={settingsQ.data.check_in_start.slice(0,5)} {...register("check_in_start", { required: true })} />
+                <Field label="Check-in start" htmlFor="check_in_start">
+                  <Input id="check_in_start" type="time" autoComplete="off" defaultValue={settingsQ.data.check_in_start.slice(0,5)} {...register("check_in_start", { required: true })} />
                 </Field>
-                <Field label="Check-in end">
-                  <Input type="time" defaultValue={settingsQ.data.check_in_end.slice(0,5)} {...register("check_in_end", { required: true })} />
+                <Field label="Check-in end" htmlFor="check_in_end">
+                  <Input id="check_in_end" type="time" autoComplete="off" defaultValue={settingsQ.data.check_in_end.slice(0,5)} {...register("check_in_end", { required: true })} />
                 </Field>
-                <Field label="Check-out start">
-                  <Input type="time" defaultValue={settingsQ.data.check_out_start.slice(0,5)} {...register("check_out_start", { required: true })} />
+                <Field label="Check-out start" htmlFor="check_out_start">
+                  <Input id="check_out_start" type="time" autoComplete="off" defaultValue={settingsQ.data.check_out_start.slice(0,5)} {...register("check_out_start", { required: true })} />
                 </Field>
-                <Field label="Check-out end">
-                  <Input type="time" defaultValue={settingsQ.data.check_out_end.slice(0,5)} {...register("check_out_end", { required: true })} />
+                <Field label="Check-out end" htmlFor="check_out_end">
+                  <Input id="check_out_end" type="time" autoComplete="off" defaultValue={settingsQ.data.check_out_end.slice(0,5)} {...register("check_out_end", { required: true })} />
                 </Field>
               </div>
-              <Button type="submit" size="sm" className="w-full mt-2" disabled={settingsMut.isPending}>
+              <Button id="save-settings-btn" name="save-settings-btn" type="submit" size="sm" className="w-full mt-2" disabled={settingsMut.isPending}>
                 Save
               </Button>
             </form>
@@ -203,13 +211,15 @@ const AdminAttendance = () => {
             <Label htmlFor="filter-date" className="text-xs text-muted-foreground">Filter date</Label>
             <Input
               id="filter-date"
+              name="filter-date"
+              autoComplete="off"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               className="w-40 h-8"
             />
             {date && (
-              <Button variant="ghost" size="sm" onClick={() => setDate("")}>Clear</Button>
+              <Button id="clear-date-btn" name="clear-date-btn" variant="ghost" size="sm" onClick={() => setDate("")}>Clear</Button>
             )}
           </div>
         </div>
@@ -255,9 +265,9 @@ const Stat = ({ label, value }: { label: string; value: number }) => (
   </div>
 );
 
-const Field = ({ label, children }: { label: string; children: React.ReactNode }) => (
+const Field = ({ label, children, htmlFor }: { label: string; children: React.ReactNode; htmlFor?: string }) => (
   <div className="space-y-1">
-    <Label className="text-xs">{label}</Label>
+    <Label htmlFor={htmlFor} className="text-xs">{label}</Label>
     {children}
   </div>
 );

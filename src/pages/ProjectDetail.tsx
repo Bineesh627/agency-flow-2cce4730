@@ -116,18 +116,18 @@ const ProjectDetail = () => {
               <form onSubmit={handleSubmit((v) => createMut.mutate(v))} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">Title</Label>
-                  <Input id="title" {...register("title", { required: "Required", maxLength: 200 })} />
+                  <Input id="title" autoComplete="off" {...register("title", { required: "Required", maxLength: 200 })} />
                   {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="description">Description</Label>
-                  <Textarea id="description" {...register("description", { maxLength: 2000 })} />
+                  <Textarea id="description" autoComplete="off" {...register("description", { maxLength: 2000 })} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label>Priority</Label>
-                    <Select value={watch("priority")} onValueChange={(v) => setValue("priority", v as TaskPriority)}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
+                    <Label htmlFor="task-priority">Priority</Label>
+                    <Select name="task-priority" value={watch("priority")} onValueChange={(v) => setValue("priority", v as TaskPriority)}>
+                      <SelectTrigger id="task-priority"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="low">Low</SelectItem>
                         <SelectItem value="medium">Medium</SelectItem>
@@ -137,13 +137,13 @@ const ProjectDetail = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="due_date">Due date</Label>
-                    <Input id="due_date" type="date" {...register("due_date")} />
+                    <Input id="due_date" type="date" autoComplete="off" {...register("due_date")} />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label>Assigned to</Label>
-                  <Select value={watch("assigned_to")} onValueChange={(v) => setValue("assigned_to", v)}>
-                    <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                  <Label htmlFor="task-assignee">Assigned to</Label>
+                  <Select name="task-assignee" value={watch("assigned_to")} onValueChange={(v) => setValue("assigned_to", v)}>
+                    <SelectTrigger id="task-assignee"><SelectValue placeholder="Unassigned" /></SelectTrigger>
                     <SelectContent>
                       {(usersQ.data ?? [])
                         .filter((u) => u.role !== "admin")
@@ -162,7 +162,7 @@ const ProjectDetail = () => {
                   </p>
                 </div>
                 <DialogFooter>
-                  <Button type="submit" className="btn-gradient" disabled={createMut.isPending}>Create</Button>
+                  <Button id="create-task-btn" name="create-task-btn" type="submit" className="btn-gradient" disabled={createMut.isPending}>Create</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -233,11 +233,13 @@ const ProjectDetail = () => {
                           </span>
                           {t.due_date && <span className="text-xs text-muted-foreground">{t.due_date}</span>}
                         </div>
+                        <Label htmlFor={`status-${t.id}`} className="sr-only">Change status</Label>
                         <Select
+                          name={`status-${t.id}`}
                           value={t.status}
                           onValueChange={(v) => statusMut.mutate({ taskId: t.id, status: v as TaskStatus })}
                         >
-                          <SelectTrigger className="h-7 mt-2 text-xs">
+                          <SelectTrigger id={`status-${t.id}`} className="h-7 mt-2 text-xs">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
