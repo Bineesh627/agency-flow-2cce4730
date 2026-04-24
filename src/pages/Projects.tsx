@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription
 } from "@/components/ui/dialog";
 import { Plus, Trash2, FolderKanban, ArrowRight } from "lucide-react";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
@@ -57,7 +57,10 @@ const Projects = () => {
               <Button className="btn-gradient"><Plus className="h-4 w-4 mr-2" /> New project</Button>
             </DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>Create project</DialogTitle></DialogHeader>
+              <DialogHeader>
+                <DialogTitle>Create project</DialogTitle>
+                <DialogDescription className="sr-only">Create a new project for the agency.</DialogDescription>
+              </DialogHeader>
               <form onSubmit={handleSubmit((v) => createMut.mutate(v))} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>

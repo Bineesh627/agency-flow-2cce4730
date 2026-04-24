@@ -33,12 +33,13 @@ Deno.serve(async (req) => {
       global: { headers: { Authorization: authHeader } },
     });
     const token = authHeader.replace("Bearer ", "");
-    const { data: claims, error: claimsErr } = await userClient.auth.getClaims(token);
-    if (claimsErr || !claims?.claims?.sub) return json({ error: "Unauthorized" }, 401);
+    const { data: userRes, error: userErr } = await userClient.auth.getUser(token);
+    const callerId = userRes?.user?.id;
+    if (userErr || !callerId) return json({ error: "Unauthorized" }, 401);
 
     const adminClient = createClient(SUPABASE_URL, SERVICE);
     const { data: isAdmin, error: roleErr } = await adminClient.rpc("has_role", {
-      _user_id: claims.claims.sub,
+      _user_id: callerId,
       _role: "admin",
     });
     if (roleErr || !isAdmin) return json({ error: "Forbidden" }, 403);

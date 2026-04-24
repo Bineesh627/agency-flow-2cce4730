@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription
 } from "@/components/ui/dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -109,7 +109,10 @@ const ProjectDetail = () => {
               <Button className="btn-gradient"><Plus className="h-4 w-4 mr-2" /> New task</Button>
             </DialogTrigger>
             <DialogContent>
-              <DialogHeader><DialogTitle>Create task</DialogTitle></DialogHeader>
+              <DialogHeader>
+                <DialogTitle>Create task</DialogTitle>
+                <DialogDescription className="sr-only">Create a new task for this project.</DialogDescription>
+              </DialogHeader>
               <form onSubmit={handleSubmit((v) => createMut.mutate(v))} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">Title</Label>

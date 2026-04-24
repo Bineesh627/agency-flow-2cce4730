@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription
 } from "@/components/ui/dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
@@ -82,7 +82,10 @@ const Users = () => {
             <Button><Plus className="h-4 w-4 mr-2" /> New user</Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader><DialogTitle>Create user</DialogTitle></DialogHeader>
+            <DialogHeader>
+              <DialogTitle>Create user</DialogTitle>
+              <DialogDescription className="sr-only">Create a new user for the team.</DialogDescription>
+            </DialogHeader>
             <form onSubmit={createForm.handleSubmit((v) => createMut.mutate(v))} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Name</Label>
@@ -229,7 +232,10 @@ const Users = () => {
 
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Edit user</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>Edit user</DialogTitle>
+            <DialogDescription className="sr-only">Edit user details and access.</DialogDescription>
+          </DialogHeader>
           {editing && (
             <form
               onSubmit={editForm.handleSubmit((v) => {
